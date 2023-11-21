@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dialog Color="[0.941 0.941 0.941]" HPosition="center" Name="layout" Position="[0 808 927 632]" Resize="off" VPosition="center" windowStyle="normal">
+    <GlobalSrc>%
+% El código fuente escrito aquí será ejecutado cuando
+% la ventana se haga visible. Funciona como el evento 'onLoad' de otros lenguajes.
+%
+
+# Bind Callbacks
+set(layout.f_val, 'callback', {layout.callBack_1, layout});
+set(layout.z_val, 'callback', {layout.callBack_1, layout});
+set(layout.r_val, 'callback', {layout.callBack_1, layout});
+set(layout.rt_val, 'callback', {layout.callBack_1, layout});
+
+set(layout.f_slider, 'callback', {layout.callBack_2, layout});
+set(layout.z_slider, 'callback', {layout.callBack_2, layout});
+set(layout.r_slider, 'callback', {layout.callBack_2, layout});
+set(layout.rt_slider, 'callback', {layout.callBack_2, layout});
+
+set(layout.limit_val, 'callback', {layout.callBack_1, layout});
+set(layout.graph_cb, 'callback', {layout.callBack_1, layout});
+
+# Get Slider Values
+dt = 0.001;
+f = 1.5;
+z = 0.3;
+r = 1.0;
+rt = 0.5;
+limit = 4;
+set(layout.f_slider, 'Value', f * 100);
+set(layout.z_slider, 'Value', z * 100);
+set(layout.r_slider, 'Value', r * 100);
+set(layout.rt_slider, 'Value', rt * 100);
+
+# Update numbers
+set(layout.f_val, 'String', num2str(f));
+set(layout.z_val, 'String', num2str(z));
+set(layout.r_val, 'String', num2str(r));
+set(layout.rt_val, 'String', num2str(rt));
+set(layout.limit_val, 'String', num2str(limit));
+
+# Plotting
+t = 0:dt:limit;
+
+k1 = z / (pi * f);
+k2 = 1 / ((2 * pi * f) * (2 * pi * f));
+k3 = r * z / (2 * pi * f);
+
+x0 = 0;
+x = zeros(1, length(t));
+y = zeros(1, length(t));
+osi = floor(rt * ((length(t) - 1) / limit));
+x(osi) = 1;
+for i = (osi + 1):length(t)
+	x(i) = max(0, x(i - 1) - dt / rt);
+endfor
+
+xp = x0;
+y(1) = x0;
+yd = 0;
+for i = 2:length(t)
+	xd = (x(i) - xp) / dt;
+	xp = x(i);
+
+	k2_stable = max(k2, max(dt*dt/2 + dt*k1/2, dt*k1));
+	y(i) = y(i - 1) + dt * yd;
+	yd = yd + dt * (x(i) + k3*xd - y(i) - k1*yd) / k2_stable;
+endfor
+
+plot(t, x, 'green');
+hold on;
+plot(t, y, 'blue');
+hold off;
+axis([0 limit -1 2]);
+
+
+
+
+
+</GlobalSrc>
+    <uiControl class="sliderCtrl" BackgroundColor="[0.941 0.941 0.941]" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="true" Max="500" Min="0" Name="f_slider" Position="[220 100 213 22]" TooltipString="" Value="0">% This code will be executed when user change the value of slider.
+% Por defecto, todos los eventos están desactivdados, para activarlos debe activar
+% propertie 'generateCallbck' from the properties editor</uiControl>
+    <uiControl class="sliderCtrl" BackgroundColor="[0.941 0.941 0.941]" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="true" Max="500" Min="-500" Name="z_slider" Position="[220 155 213 22]" TooltipString="" Value="0">% This code will be executed when user change the value of slider.
+% Por defecto, todos los eventos están desactivdados, para activarlos debe activar
+% propertie 'generateCallbck' from the properties editor</uiControl>
+    <uiControl class="sliderCtrl" BackgroundColor="[0.941 0.941 0.941]" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="true" Max="500" Min="-500" Name="r_slider" Position="[220 215 214 22]" TooltipString="" Value="0">% This code will be executed when user change the value of slider.
+% Por defecto, todos los eventos están desactivdados, para activarlos debe activar
+% propertie 'generateCallbck' from the properties editor</uiControl>
+    <uiControl class="textCtrl" BackgroundColor="[0.941 0.941 0.941]" FontAngle="italic" FontName="Bell MT" FontSize="18" FontWeight="normal" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="false" HorizontalAlignment="center" isAutoSize="true" Name="f" Position="[20 90 39 27]" String="  f  " TooltipString=""/>
+    <uiControl class="textCtrl" BackgroundColor="[0.941 0.941 0.941]" FontAngle="normal" FontName="Arial Black" FontSize="20" FontWeight="normal" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="false" HorizontalAlignment="center" isAutoSize="true" Name="title" Position="[15 11 356 38]" String="Second Order Dynamics" TooltipString=""/>
+    <uiControl class="imgCtrl" FontAngle="normal" FontName="Arial" FontSize="10" FontWeight="normal" Name="plot_section" Position="[450 75 437 383]"/>
+    <uiControl class="callBackCtrl" Arguments="layout" functionName="updateGraph01" Name="callBack_2" Position="[70 530 52 52]">% Este código puede definir un callback.
+% Debe asociarlo a una figura o control en eventos del tipo &quot;onload&quot; asociados a la ventana de diálogo
+
+# Get Slider Values
+dt = 0.001;
+f = get(layout.f_slider, 'Value') / 100;
+z = get(layout.z_slider, 'Value') / 100;
+r = get(layout.r_slider, 'Value') / 100;
+rt = get(layout.rt_slider, 'Value') / 100;
+limit = str2num(get(layout.limit_val, 'String'));
+graphNr = get(layout.graph_cb, 'Value');
+
+# Update numbers
+set(layout.f_val, 'String', num2str(f));
+set(layout.z_val, 'String', num2str(z));
+set(layout.r_val, 'String', num2str(r));
+set(layout.rt_val, 'String', num2str(rt));
+
+# Plotting
+t = 0:dt:limit;
+
+k1 = z / (pi * f);
+k2 = 1 / ((2 * pi * f) * (2 * pi * f));
+k3 = r * z / (2 * pi * f);
+
+x0 = 0;
+x = zeros(1, length(t));
+y = zeros(1, length(t));
+osi = floor(rt * ((length(t) - 1) / limit));
+if (graphNr == 1)
+	x(osi) = 1;
+	for i = (osi + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / rt);
+	endfor
+elseif (graphNr == 2)
+	for i = osi:length(t)
+		x(i) = 1;
+	endfor
+elseif (graphNr == 3)
+	hrt = rt / 2;
+	for i = osi:length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) &gt;= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) &lt;= 0)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) &gt;= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) &lt;= 0)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) &gt;= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) &lt;= 0)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) &gt;= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) &lt;= 0)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) &gt;= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) &lt;= 0)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) &gt;= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) &lt;= 0)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) &gt;= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) &lt;= 0)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) &gt;= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) &lt;= 0)
+			li = i;
+			break;
+		endif
+	endfor
+endif
+
+xp = x0;
+y(1) = x0;
+yd = 0;
+for i = 2:length(t)
+	xd = (x(i) - xp) / dt;
+	xp = x(i);
+
+	k2_stable = max(k2, max(dt*dt/2 + dt*k1/2, dt*k1));
+	y(i) = y(i - 1) + dt * yd;
+	yd = yd + dt * (x(i) + k3*xd - y(i) - k1*yd) / k2_stable;
+endfor
+
+plot(t, x, 'green');
+hold on;
+plot(t, y, 'blue');
+hold off;
+axis([0 limit -1 2]);
+</uiControl>
+    <uiControl class="textCtrl" BackgroundColor="[0.941 0.941 0.941]" FontAngle="italic" FontName="Bell MT" FontSize="18" FontWeight="normal" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="false" HorizontalAlignment="center" isAutoSize="true" Name="z" Position="[20 150 36 27]" String="  z  " TooltipString=""/>
+    <uiControl class="textCtrl" BackgroundColor="[0.941 0.941 0.941]" FontAngle="italic" FontName="Bell MT" FontSize="18" FontWeight="normal" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="false" HorizontalAlignment="center" isAutoSize="true" Name="r" Position="[25 205 33 27]" String="  r  " TooltipString=""/>
+    <uiControl class="callBackCtrl" Arguments="layout" functionName="updateGraph02" Name="callBack_1" Position="[15 530 52 52]">% Este código puede definir un callback.
+% Debe asociarlo a una figura o control en eventos del tipo &quot;onload&quot; asociados a la ventana de diálogo
+
+# Get Slider Values
+dt = 0.001;
+f = str2num(get(layout.f_val, 'String'));
+z = str2num(get(layout.z_val, 'String'));
+r = str2num(get(layout.r_val, 'String'));
+rt = str2num(get(layout.rt_val, 'String'));
+limit = str2num(get(layout.limit_val, 'String'));
+graphNr = get(layout.graph_cb, 'Value');
+
+# Update numbers
+set(layout.f_slider, 'Value', f * 100);
+set(layout.z_slider, 'Value', z * 100);
+set(layout.r_slider, 'Value', r * 100);
+set(layout.rt_slider, 'Value', rt * 100);
+
+# Plotting
+t = 0:dt:limit;
+
+k1 = z / (pi * f);
+k2 = 1 / ((2 * pi * f) * (2 * pi * f));
+k3 = r * z / (2 * pi * f);
+
+x0 = 0;
+x = zeros(1, length(t));
+y = zeros(1, length(t));
+osi = floor(rt * ((length(t) - 1) / limit));
+if (graphNr == 1)
+	x(osi) = 1;
+	for i = (osi + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / rt);
+	endfor
+elseif (graphNr == 2)
+	for i = osi:length(t)
+		x(i) = 1;
+	endfor
+elseif (graphNr == 3)
+	hrt = rt / 2;
+	for i = osi:length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) &gt;= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) &lt;= 0)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) &gt;= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) &lt;= 0)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) &gt;= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) &lt;= 0)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) &gt;= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) &lt;= 0)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) &gt;= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) &lt;= 0)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) &gt;= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) &lt;= 0)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) &gt;= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) &lt;= 0)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) &gt;= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) &lt;= 0)
+			li = i;
+			break;
+		endif
+	endfor
+endif
+
+xp = x0;
+y(1) = x0;
+yd = 0;
+for i = 2:length(t)
+	xd = (x(i) - xp) / dt;
+	xp = x(i);
+
+	k2_stable = max(k2, max(dt*dt/2 + dt*k1/2, dt*k1));
+	y(i) = y(i - 1) + dt * yd;
+	yd = yd + dt * (x(i) + k3*xd - y(i) - k1*yd) / k2_stable;
+endfor
+
+plot(t, x, 'green');
+hold on;
+plot(t, y, 'blue');
+hold off;
+axis([0 limit -1 2]);
+</uiControl>
+    <uiControl class="editCtrl" BackgroundColor="[1.000 1.000 1.000]" FontAngle="normal" FontName="Arial" FontSize="16" FontWeight="normal" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="false" HorizontalAlignment="center" Name="f_val" Position="[90 100 90 22]" String="0" TooltipString="">% This code will be executed when the control lost focus and text has 
+% been changed or when press the &quot;enter&quot; key.
+% Por defecto, todos los eventos están desactivdados, para activarlos debe activar
+% la propiead have callback desde el editor de propiedades</uiControl>
+    <uiControl class="editCtrl" BackgroundColor="[1.000 1.000 1.000]" FontAngle="normal" FontName="Arial" FontSize="16" FontWeight="normal" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="false" HorizontalAlignment="center" Name="z_val" Position="[90 155 90 22]" String="0" TooltipString="">% This code will be executed when the control lost focus and text has 
+% been changed or when press the &quot;enter&quot; key.
+% Por defecto, todos los eventos están desactivdados, para activarlos debe activar
+% la propiead have callback desde el editor de propiedades</uiControl>
+    <uiControl class="editCtrl" BackgroundColor="[1.000 1.000 1.000]" FontAngle="normal" FontName="Arial" FontSize="16" FontWeight="normal" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="false" HorizontalAlignment="center" Name="r_val" Position="[90 215 90 22]" String="0" TooltipString="">% This code will be executed when the control lost focus and text has 
+% been changed or when press the &quot;enter&quot; key.
+% Por defecto, todos los eventos están desactivdados, para activarlos debe activar
+% la propiead have callback desde el editor de propiedades</uiControl>
+    <uiControl class="textCtrl" BackgroundColor="[0.941 0.941 0.941]" FontAngle="italic" FontName="Bell MT" FontSize="18" FontWeight="normal" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="false" HorizontalAlignment="center" isAutoSize="true" Name="rt" Position="[20 265 40 27]" String="  rt  " TooltipString=""/>
+    <uiControl class="editCtrl" BackgroundColor="[1.000 1.000 1.000]" FontAngle="normal" FontName="Arial" FontSize="16" FontWeight="normal" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="true" HorizontalAlignment="center" Name="rt_val" Position="[90 270 90 22]" String="0" TooltipString="">% This code will be executed when the control lost focus and text has 
+% been changed or when press the &quot;enter&quot; key.
+% Por defecto, todos los eventos están desactivdados, para activarlos debe activar
+% la propiead have callback desde el editor de propiedades</uiControl>
+    <uiControl class="sliderCtrl" BackgroundColor="[0.941 0.941 0.941]" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="true" Max="500" Min="0" Name="rt_slider" Position="[220 270 213 22]" TooltipString="" Value="0">% This code will be executed when user change the value of slider.
+% Por defecto, todos los eventos están desactivdados, para activarlos debe activar
+% propertie 'generateCallbck' from the properties editor</uiControl>
+    <uiControl class="editCtrl" BackgroundColor="[1.000 1.000 1.000]" FontAngle="normal" FontName="Arial" FontSize="16" FontWeight="normal" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="true" HorizontalAlignment="center" Name="limit_val" Position="[535 490 90 22]" String="0" TooltipString="">% This code will be executed when the control lost focus and text has 
+% been changed or when press the &quot;enter&quot; key.
+% Por defecto, todos los eventos están desactivdados, para activarlos debe activar
+% la propiead have callback desde el editor de propiedades</uiControl>
+    <uiControl class="textCtrl" BackgroundColor="[0.941 0.941 0.941]" FontAngle="italic" FontName="Bell MT" FontSize="18" FontWeight="normal" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="false" HorizontalAlignment="center" isAutoSize="true" Name="limit" Position="[450 490 68 27]" String="  limit  " TooltipString=""/>
+    <uiControl class="cmbCtrl" BackgroundColor="[0.941 0.941 0.941]" FontAngle="normal" FontName="Arial" FontSize="14" FontWeight="normal" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="true" Name="graph_cb" Position="[455 20 94 25]" String="Graph 1|Graph 2|Graph 3" TooltipString=""/>
+</dialog>
