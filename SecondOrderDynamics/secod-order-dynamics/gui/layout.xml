@@ -86,7 +86,7 @@ axis([0 limit -1 2]);
     <uiControl class="sliderCtrl" BackgroundColor="[0.941 0.941 0.941]" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="true" Max="500" Min="-500" Name="r_slider" Position="[220 215 214 22]" TooltipString="" Value="0">% This code will be executed when user change the value of slider.
 % Por defecto, todos los eventos están desactivdados, para activarlos debe activar
 % propertie 'generateCallbck' from the properties editor</uiControl>
-    <uiControl class="textCtrl" BackgroundColor="[0.941 0.941 0.941]" FontAngle="italic" FontName="Bell MT" FontSize="18" FontWeight="normal" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="false" HorizontalAlignment="center" isAutoSize="true" Name="f" Position="[20 90 39 27]" String="  f  " TooltipString=""/>
+    <uiControl class="textCtrl" BackgroundColor="[0.941 0.941 0.941]" FontAngle="italic" FontName="Bell MT" FontSize="18" FontWeight="normal" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="false" HorizontalAlignment="center" isAutoSize="true" Name="f" Position="[20 90 40 29]" String="  f  " TooltipString=""/>
     <uiControl class="textCtrl" BackgroundColor="[0.941 0.941 0.941]" FontAngle="normal" FontName="Arial Black" FontSize="20" FontWeight="normal" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="false" HorizontalAlignment="center" isAutoSize="true" Name="title" Position="[15 11 356 38]" String="Second Order Dynamics" TooltipString=""/>
     <uiControl class="imgCtrl" FontAngle="normal" FontName="Arial" FontSize="10" FontWeight="normal" Name="plot_section" Position="[450 75 437 383]"/>
     <uiControl class="callBackCtrl" Arguments="layout" functionName="updateGraph01" Name="callBack_2" Position="[70 530 52 52]">% Este código puede definir un callback.
@@ -128,6 +128,10 @@ elseif (graphNr == 2)
 		x(i) = 1;
 	endfor
 elseif (graphNr == 3)
+	for i = (osi + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / rt);
+	endfor
+elseif (graphNr == 4)
 	hrt = rt / 2;
 	for i = osi:length(t)
 		x(i) = min(1, x(i - 1) + dt / hrt);
@@ -261,8 +265,8 @@ plot(t, y, 'blue');
 hold off;
 axis([0 limit -1 2]);
 </uiControl>
-    <uiControl class="textCtrl" BackgroundColor="[0.941 0.941 0.941]" FontAngle="italic" FontName="Bell MT" FontSize="18" FontWeight="normal" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="false" HorizontalAlignment="center" isAutoSize="true" Name="z" Position="[20 150 36 27]" String="  z  " TooltipString=""/>
-    <uiControl class="textCtrl" BackgroundColor="[0.941 0.941 0.941]" FontAngle="italic" FontName="Bell MT" FontSize="18" FontWeight="normal" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="false" HorizontalAlignment="center" isAutoSize="true" Name="r" Position="[25 205 33 27]" String="  r  " TooltipString=""/>
+    <uiControl class="textCtrl" BackgroundColor="[0.941 0.941 0.941]" FontAngle="italic" FontName="Bell MT" FontSize="18" FontWeight="normal" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="false" HorizontalAlignment="center" isAutoSize="true" Name="z" Position="[20 150 43 29]" String="  z  " TooltipString=""/>
+    <uiControl class="textCtrl" BackgroundColor="[0.941 0.941 0.941]" FontAngle="italic" FontName="Bell MT" FontSize="18" FontWeight="normal" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="false" HorizontalAlignment="center" isAutoSize="true" Name="r" Position="[25 205 41 29]" String="  r  " TooltipString=""/>
     <uiControl class="callBackCtrl" Arguments="layout" functionName="updateGraph02" Name="callBack_1" Position="[15 530 52 52]">% Este código puede definir un callback.
 % Debe asociarlo a una figura o control en eventos del tipo &quot;onload&quot; asociados a la ventana de diálogo
 
@@ -302,6 +306,10 @@ elseif (graphNr == 2)
 		x(i) = 1;
 	endfor
 elseif (graphNr == 3)
+	for i = (osi + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / rt);
+	endfor
+elseif (graphNr == 4)
 	hrt = rt / 2;
 	for i = osi:length(t)
 		x(i) = min(1, x(i - 1) + dt / hrt);
@@ -447,7 +455,7 @@ axis([0 limit -1 2]);
 % been changed or when press the &quot;enter&quot; key.
 % Por defecto, todos los eventos están desactivdados, para activarlos debe activar
 % la propiead have callback desde el editor de propiedades</uiControl>
-    <uiControl class="textCtrl" BackgroundColor="[0.941 0.941 0.941]" FontAngle="italic" FontName="Bell MT" FontSize="18" FontWeight="normal" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="false" HorizontalAlignment="center" isAutoSize="true" Name="rt" Position="[20 265 40 27]" String="  rt  " TooltipString=""/>
+    <uiControl class="textCtrl" BackgroundColor="[0.941 0.941 0.941]" FontAngle="italic" FontName="Bell MT" FontSize="18" FontWeight="normal" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="false" HorizontalAlignment="center" isAutoSize="true" Name="rt" Position="[20 265 49 29]" String="  rt  " TooltipString=""/>
     <uiControl class="editCtrl" BackgroundColor="[1.000 1.000 1.000]" FontAngle="normal" FontName="Arial" FontSize="16" FontWeight="normal" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="true" HorizontalAlignment="center" Name="rt_val" Position="[90 270 90 22]" String="0" TooltipString="">% This code will be executed when the control lost focus and text has 
 % been changed or when press the &quot;enter&quot; key.
 % Por defecto, todos los eventos están desactivdados, para activarlos debe activar
@@ -459,6 +467,6 @@ axis([0 limit -1 2]);
 % been changed or when press the &quot;enter&quot; key.
 % Por defecto, todos los eventos están desactivdados, para activarlos debe activar
 % la propiead have callback desde el editor de propiedades</uiControl>
-    <uiControl class="textCtrl" BackgroundColor="[0.941 0.941 0.941]" FontAngle="italic" FontName="Bell MT" FontSize="18" FontWeight="normal" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="false" HorizontalAlignment="center" isAutoSize="true" Name="limit" Position="[450 490 68 27]" String="  limit  " TooltipString=""/>
-    <uiControl class="cmbCtrl" BackgroundColor="[0.941 0.941 0.941]" FontAngle="normal" FontName="Arial" FontSize="14" FontWeight="normal" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="true" Name="graph_cb" Position="[455 20 94 25]" String="Graph 1|Graph 2|Graph 3" TooltipString=""/>
+    <uiControl class="textCtrl" BackgroundColor="[0.941 0.941 0.941]" FontAngle="italic" FontName="Bell MT" FontSize="18" FontWeight="normal" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="false" HorizontalAlignment="center" isAutoSize="true" Name="limit" Position="[450 490 75 29]" String="  limit  " TooltipString=""/>
+    <uiControl class="cmbCtrl" BackgroundColor="[0.941 0.941 0.941]" FontAngle="normal" FontName="Arial" FontSize="14" FontWeight="normal" ForegroundColor="[0.000 0.000 0.000]" GenerateCallBack="true" Name="graph_cb" Position="[455 20 94 25]" String="Graph 1|Graph 2|Graph 3|Graph 4" TooltipString=""/>
 </dialog>

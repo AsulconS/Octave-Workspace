@@ -70,6 +70,7 @@ z = get(layout.z_slider, 'Value') / 100;
 r = get(layout.r_slider, 'Value') / 100;
 rt = get(layout.rt_slider, 'Value') / 100;
 limit = str2num(get(layout.limit_val, 'String'));
+graphNr = get(layout.graph_cb, 'Value');
 
 # Update numbers
 set(layout.f_val, 'String', num2str(f));
@@ -87,11 +88,135 @@ k3 = r * z / (2 * pi * f);
 x0 = 0;
 x = zeros(1, length(t));
 y = zeros(1, length(t));
-osi = floor(0.5 * ((length(t) - 1) / 5 + 1));
-x(osi) = 1.5;
-for i = (osi + 1):length(t)
-	x(i) = max(0, x(i - 1) - dt / rt);
-endfor
+osi = floor(rt * ((length(t) - 1) / limit));
+if (graphNr == 1)
+	x(osi) = 1;
+	for i = (osi + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / rt);
+	endfor
+elseif (graphNr == 2)
+	for i = osi:length(t)
+		x(i) = 1;
+	endfor
+elseif (graphNr == 3)
+	for i = (osi + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / rt);
+	endfor
+elseif (graphNr == 4)
+	hrt = rt / 2;
+	for i = osi:length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) >= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) <= 0)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) >= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) <= 0)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) >= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) <= 0)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) >= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) <= 0)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) >= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) <= 0)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) >= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) <= 0)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) >= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) <= 0)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) >= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) <= 0)
+			li = i;
+			break;
+		endif
+	endfor
+endif
 
 xp = x0;
 y(1) = x0;
@@ -130,6 +255,7 @@ z = str2num(get(layout.z_val, 'String'));
 r = str2num(get(layout.r_val, 'String'));
 rt = str2num(get(layout.rt_val, 'String'));
 limit = str2num(get(layout.limit_val, 'String'));
+graphNr = get(layout.graph_cb, 'Value');
 
 # Update numbers
 set(layout.f_slider, 'Value', f * 100);
@@ -147,11 +273,135 @@ k3 = r * z / (2 * pi * f);
 x0 = 0;
 x = zeros(1, length(t));
 y = zeros(1, length(t));
-osi = floor(0.5 * ((length(t) - 1) / 5 + 1));
-x(osi) = 1.5;
-for i = (osi + 1):length(t)
-	x(i) = max(0, x(i - 1) - dt / rt);
-endfor
+osi = floor(rt * ((length(t) - 1) / limit));
+if (graphNr == 1)
+	x(osi) = 1;
+	for i = (osi + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / rt);
+	endfor
+elseif (graphNr == 2)
+	for i = osi:length(t)
+		x(i) = 1;
+	endfor
+elseif (graphNr == 3)
+	for i = (osi + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / rt);
+	endfor
+elseif (graphNr == 4)
+	hrt = rt / 2;
+	for i = osi:length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) >= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) <= 0)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) >= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) <= 0)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) >= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) <= 0)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) >= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) <= 0)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) >= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) <= 0)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) >= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) <= 0)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) >= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) <= 0)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = min(1, x(i - 1) + dt / hrt);
+		if ((x(i - 1) + dt / rt) >= 1)
+			li = i;
+			break;
+		endif
+	endfor
+	for i = (li + 1):length(t)
+		x(i) = max(0, x(i - 1) - dt / hrt);
+		if ((x(i - 1) - dt / rt) <= 0)
+			li = i;
+			break;
+		endif
+	endfor
+endif
 
 xp = x0;
 y(1) = x0;
@@ -209,6 +459,15 @@ function limit_val_doIt(src, data, layout)
 % been changed or when press the "enter" key.
 % Por defecto, todos los eventos están desactivdados, para activarlos debe activar
 % la propiead have callback desde el editor de propiedades
+end
+
+## @deftypefn  {} {} graph_cb_doIt (@var{src}, @var{data}, @var{layout})
+##
+## Define a callback for default action of graph_cb control.
+##
+## @end deftypefn
+function graph_cb_doIt(src, data, layout)
+
 end
 
  
@@ -273,7 +532,7 @@ function ret = show_layout()
 	'FontWeight', 'normal', ... 
 	'ForegroundColor', [0.000 0.000 0.000], ... 
 	'HorizontalAlignment', 'center', ... 
-	'Position', [20 476 39 27], ... 
+	'Position', [20 474 40 29], ... 
 	'String', '  f  ', ... 
 	'TooltipString', '');
   title = uicontrol( ...
@@ -310,7 +569,7 @@ function ret = show_layout()
 	'FontWeight', 'normal', ... 
 	'ForegroundColor', [0.000 0.000 0.000], ... 
 	'HorizontalAlignment', 'center', ... 
-	'Position', [20 416 36 27], ... 
+	'Position', [20 414 43 29], ... 
 	'String', '  z  ', ... 
 	'TooltipString', '');
   r = uicontrol( ...
@@ -324,7 +583,7 @@ function ret = show_layout()
 	'FontWeight', 'normal', ... 
 	'ForegroundColor', [0.000 0.000 0.000], ... 
 	'HorizontalAlignment', 'center', ... 
-	'Position', [25 361 33 27], ... 
+	'Position', [25 359 41 29], ... 
 	'String', '  r  ', ... 
 	'TooltipString', '');
   callBack_1 = @updateGraph02;
@@ -381,7 +640,7 @@ function ret = show_layout()
 	'FontWeight', 'normal', ... 
 	'ForegroundColor', [0.000 0.000 0.000], ... 
 	'HorizontalAlignment', 'center', ... 
-	'Position', [20 301 40 27], ... 
+	'Position', [20 299 49 29], ... 
 	'String', '  rt  ', ... 
 	'TooltipString', '');
   rt_val = uicontrol( ...
@@ -434,8 +693,21 @@ function ret = show_layout()
 	'FontWeight', 'normal', ... 
 	'ForegroundColor', [0.000 0.000 0.000], ... 
 	'HorizontalAlignment', 'center', ... 
-	'Position', [450 76 68 27], ... 
+	'Position', [450 74 75 29], ... 
 	'String', '  limit  ', ... 
+	'TooltipString', '');
+  graph_cb = uicontrol( ...
+	'parent',layout, ... 
+	'Style','popupmenu', ... 
+	'Units', 'pixels', ... 
+	'BackgroundColor', [0.941 0.941 0.941], ... 
+	'FontAngle', 'normal', ... 
+	'FontName', 'Arial', ... 
+	'FontSize', 14, 'FontUnits', 'points', ... 
+	'FontWeight', 'normal', ... 
+	'ForegroundColor', [0.000 0.000 0.000], ... 
+	'Position', [455 548 94 25], ... 
+	'String', 'Graph 1|Graph 2|Graph 3|Graph 4', ... 
 	'TooltipString', '');
 
   layout = struct( ...
@@ -457,7 +729,8 @@ function ret = show_layout()
       'rt_val', rt_val, ...
       'rt_slider', rt_slider, ...
       'limit_val', limit_val, ...
-      'limit', limit);
+      'limit', limit, ...
+      'graph_cb', graph_cb);
 
 
   set (f_slider, 'callback', {@f_slider_doIt, layout});
@@ -466,6 +739,7 @@ function ret = show_layout()
   set (rt_val, 'callback', {@rt_val_doIt, layout});
   set (rt_slider, 'callback', {@rt_slider_doIt, layout});
   set (limit_val, 'callback', {@limit_val_doIt, layout});
+  set (graph_cb, 'callback', {@graph_cb_doIt, layout});
   dlg = struct(layout);
 
 %
@@ -485,6 +759,7 @@ set(layout.r_slider, 'callback', {layout.callBack_2, layout});
 set(layout.rt_slider, 'callback', {layout.callBack_2, layout});
 
 set(layout.limit_val, 'callback', {layout.callBack_1, layout});
+set(layout.graph_cb, 'callback', {layout.callBack_1, layout});
 
 # Get Slider Values
 dt = 0.001;
@@ -515,8 +790,8 @@ k3 = r * z / (2 * pi * f);
 x0 = 0;
 x = zeros(1, length(t));
 y = zeros(1, length(t));
-osi = floor(0.5 * ((length(t) - 1) / 5 + 1));
-x(osi) = 1.5;
+osi = floor(rt * ((length(t) - 1) / limit));
+x(osi) = 1;
 for i = (osi + 1):length(t)
 	x(i) = max(0, x(i - 1) - dt / rt);
 endfor
@@ -538,6 +813,9 @@ hold on;
 plot(t, y, 'blue');
 hold off;
 axis([0 limit -1 2]);
+
+
+
 
 
 
